@@ -48,14 +48,16 @@ const putMinus = (req, res) => {
         balance -=cost;
         console.log('bal1', balance)
     })
-    .catch(e => console.error(e))
-    pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
-        if (error) {
-            throw error;
-        }
-        console.log('bal2', balance)
-        res.status(200).send(`${category} updated with balance of ${balance}`);
+    .then(() => {
+        pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
+            if (error) {
+                throw error;
+            }
+            console.log('bal2', balance)
+            res.status(200).send(`${category} updated with balance of ${balance}`);
+        })
     })
+    .catch(e => console.error(e))
 } 
 
 // PUT add to balance of existing category
