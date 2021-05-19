@@ -18,19 +18,8 @@ envelopesRouter.get('/:category', db.getCategory)
 envelopesRouter.put('/:category', db.putMinus)
 
 // Update an envelope's balance: add money
+envelopesRouter.put('/:category/add', db.putAdd)
 
-
-// Create an envelope
-envelopesRouter.post('/', (req, res, next) => {
-    const id = envelopes.length + 1
-    const a = {
-        "ID": id,
-        "category": Object.values(req.body)[0],
-        "balance": Object.values(req.body)[1]
-    }
-    envelopes.push(a);
-    res.status(201).send(envelopes[id - 1])
-})
 
 // Transfer budget from one envelope to another
 envelopesRouter.post('/transfer/:from/:to', (req, res, next) => {
@@ -44,6 +33,19 @@ envelopesRouter.post('/transfer/:from/:to', (req, res, next) => {
     envelopes[indexFrom]["balance"] -= Number(value);
     envelopes[indexTo]["balance"] += Number(value)
     res.status(201).send(envelopes[indexTo]);
+})
+
+
+// Create an envelope
+envelopesRouter.post('/', (req, res, next) => {
+    const id = envelopes.length + 1
+    const a = {
+        "ID": id,
+        "category": Object.values(req.body)[0],
+        "balance": Object.values(req.body)[1]
+    }
+    envelopes.push(a);
+    res.status(201).send(envelopes[id - 1])
 })
 
 // Delete an envelope

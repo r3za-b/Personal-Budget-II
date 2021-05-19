@@ -1,4 +1,3 @@
-// git practice
 const Pool = require('pg').Pool
 
 const pool = new Pool({
@@ -43,15 +42,18 @@ const putMinus = (req, res) => {
     .query('SELECT balance FROM envelopes where category = $1', [category])
     .then(results => {
         balance = Object.values(results.rows[0]);
+        console.log('bal', balance)
     })
     .then(() => {
         balance -=cost;
+        console.log('bal1', balance)
     })
     .catch(e => console.error(e))
     pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
         if (error) {
             throw error;
         }
+        console.log('bal2', balance)
         res.status(200).send(`${category} updated with balance of ${balance}`);
     })
 } 
@@ -59,16 +61,23 @@ const putMinus = (req, res) => {
 // PUT add to balance of existing category
 const putAdd = (req, res) => {
     const category = req.params.category;
-    const money = Object.values(req.body)[0];
+    const value = Object.values(req.body)[0];
+    addMoney(category, value, res)
+} 
+
+// PUT Transfer some of the balance of one category to another
+const putTransfer = (req, res) => {
+    // Minus money from "from" category
+    const category = req.params.from;
+    const money = req.headers.value;
     let balance = Number(0);
-    
     pool
     .query('SELECT balance FROM envelopes where category = $1', [category])
     .then(results => {
         balance = Object.values(results.rows[0]);
     })
     .then(() => {
-        balance += money;
+        balance -= money;
     })
     .catch(e => console.error(e))
     pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
@@ -77,7 +86,31 @@ const putAdd = (req, res) => {
         }
         res.status(200).send(`${category} updated with balance of ${balance}`);
     })
+    // Add money to "to" category
 } 
+
+
+// functions
+
+/*const addMoney = (category, value, res) => {
+    let balance = Number(0)
+    pool
+    .query('SELECT balance FROM envelopes where category = $1', [category])
+    .then(results => {
+        balance = Object.values(results.rows[0]);
+        console.log(balance);
+    })
+    .then(() => {
+        balance += Number(value);
+    })
+    .catch(e => console.error(e))
+    pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
+        if (error) {
+            throw error;
+        }
+        res.status(200).send(`${category} updated with balance of ${balance}`);
+    })
+}*/
 
 module.exports = {
     getCategories,
