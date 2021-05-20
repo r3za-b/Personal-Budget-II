@@ -9,31 +9,20 @@ envelopesRouter.use(express.json()); /* This allows us to access the body data i
 
 
 // Read all envelopes
-envelopesRouter.get('/', db.getCategories)
+envelopesRouter.get('/', db.getEnvelopes)
 
 // Read a single envelope
-envelopesRouter.get('/:category', db.getCategory)
+envelopesRouter.get('/:envelope', db.getEnvelope)
 
 // Update an envelope's balance: minus money
-envelopesRouter.put('/:category', db.putMinus)
+envelopesRouter.put('/:envelope/minus', db.putMinus)
 
 // Update an envelope's balance: add money
-envelopesRouter.put('/:category/add', db.putAdd)
+envelopesRouter.put('/:envelope/add', db.putAdd)
 
 
 // Transfer budget from one envelope to another
-envelopesRouter.post('/transfer/:from/:to', (req, res, next) => {
-    const value = req.headers.value;
-    const indexFrom = envelopes.findIndex(x => { // find index of array by category
-    return x.category === req.params.from;
-    })
-    const indexTo = envelopes.findIndex(x => { // find index of array by category
-    return x.category === req.params.to;
-    })
-    envelopes[indexFrom]["balance"] -= Number(value);
-    envelopes[indexTo]["balance"] += Number(value)
-    res.status(201).send(envelopes[indexTo]);
-})
+envelopesRouter.put('/transfer/:from/:to', db.putTransfer)
 
 
 // Create an envelope
@@ -41,7 +30,7 @@ envelopesRouter.post('/', (req, res, next) => {
     const id = envelopes.length + 1
     const a = {
         "ID": id,
-        "category": Object.values(req.body)[0],
+        "envelope": Object.values(req.body)[0],
         "balance": Object.values(req.body)[1]
     }
     envelopes.push(a);
@@ -49,9 +38,9 @@ envelopesRouter.post('/', (req, res, next) => {
 })
 
 // Delete an envelope
-envelopesRouter.delete('/:category', (req, res, next) => {
-    const index = envelopes.findIndex(x => { // find index of array by category
-        return x.category === req.params.category;
+envelopesRouter.delete('/:envelope', (req, res, next) => {
+    const index = envelopes.findIndex(x => { // find index of array by envelope
+        return x.envelope === req.params.envelope;
     })
     if (index !== -1) {
         envelopes.splice(index, 1);

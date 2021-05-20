@@ -10,8 +10,8 @@ const pool = new Pool({
 
 // create functions for each route
 
-// GET all categories
-const getCategories = (req, res) => {
+// GET all envelopes
+const getEnvelopes = (req, res) => {
     pool.query('SELECT * FROM envelopes ORDER BY id ASC', (error, results) => { 
         if (error) {
             throw error
@@ -20,10 +20,10 @@ const getCategories = (req, res) => {
     })
 }
 
-// GET a single category
-const getCategory = (req, res) => {
-    const category = req.params.category
-    pool.query('SELECT * FROM envelopes where category = $1', [category], (error, results) => { 
+// GET a single envelope
+const getEnvelope = (req, res) => {
+    const envelope = req.params.envelope
+    pool.query('SELECT * FROM envelopes where envelope = $1', [envelope], (error, results) => { 
         if (error) {
             throw error
         }
@@ -31,92 +31,122 @@ const getCategory = (req, res) => {
     })
 }
 
-// PUT minus from balance of existing category
+// PUT minus from balance of existing envelope
 const putMinus = (req, res) => {
-    const category = req.params.category;
-    const cost = Object.values(req.body)[0];
-    let balance = Number(0);
-    
-    // I had to create a Promise because I was getting an error that balance could not be calculated as it was still waiting for the query result
-    pool
-    .query('SELECT balance FROM envelopes where category = $1', [category])
-    .then(results => {
-        balance = Object.values(results.rows[0]);
-        console.log('bal', balance)
-    })
-    .then(() => {
-        balance -=cost;
-        console.log('bal1', balance)
-    })
-    .then(() => {
-        pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
-            if (error) {
-                throw error;
-            }
-            console.log('bal2', balance)
-            res.status(200).send(`${category} updated with balance of ${balance}`);
-        })
-    })
-    .catch(e => console.error(e))
-} 
-
-// PUT add to balance of existing category
-const putAdd = (req, res) => {
-    const category = req.params.category;
+    const envelope = req.params.envelope;
     const value = Object.values(req.body)[0];
-    addMoney(category, value, res)
+    minusMoney(envelope, value, res)
 } 
 
-// PUT Transfer some of the balance of one category to another
+// PUT add to balance of existing envelope
+const putAdd = (req, res) => {
+    const envelope = req.params.envelope;
+    const value = Object.values(req.body)[0];
+    addMoney(envelope, value, res)
+} 
+
+// PUT Transfer some of the balance of one envelope to another
 const putTransfer = (req, res) => {
-    // Minus money from "from" category
-    const category = req.params.from;
-    const money = req.headers.value;
-    let balance = Number(0);
-    pool
-    .query('SELECT balance FROM envelopes where category = $1', [category])
-    .then(results => {
-        balance = Object.values(results.rows[0]);
-    })
-    .then(() => {
-        balance -= money;
-    })
-    .catch(e => console.error(e))
-    pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
-        if (error) {
-            throw error;
-        }
-        res.status(200).send(`${category} updated with balance of ${balance}`);
-    })
-    // Add money to "to" category
+    const value = req.headers.value;
+    const fromEnv = req.params.from;
+    const toEnv = req.params.to;
+    transferMoney(fromEnv, toEnv, value, res);
 } 
 
 
 // functions
 
-/*const addMoney = (category, value, res) => {
+const addMoney = (envelope, value, res) => {
     let balance = Number(0)
+        // I had to create a Promise because I was getting an error that balance could not be calculated as it was still waiting for the query result
     pool
-    .query('SELECT balance FROM envelopes where category = $1', [category])
+    .query('SELECT balance FROM envelopes where envelope = $1', [envelope])
     .then(results => {
-        balance = Object.values(results.rows[0]);
-        console.log(balance);
+        balance = Object.values(results.rows[0])[0];
     })
     .then(() => {
         balance += Number(value);
     })
-    .catch(e => console.error(e))
-    pool.query('UPDATE envelopes SET balance = $1 where category = $2', [balance, category], (error, results) => { 
-        if (error) {
-            throw error;
-        }
-        res.status(200).send(`${category} updated with balance of ${balance}`);
+    .then(() => {
+        pool.query('UPDATE envelopes SET balance = $1 where envelope = $2', [balance, envelope], (error, results) => { 
+            if (error) {
+                throw error;
+            }
+            res.status(200).send(`${envelope} updated with balance of ${balance}`);
+        })
     })
-}*/
+    .catch(e => console.error(e))
+}
+
+const minusMoney = (envelope, value, res) => {
+    let balance = Number(0)
+    pool
+    .query('SELECT balance FROM envelopes where envelope = $1', [envelope])
+    .then(results => {
+        balance = Object.values(results.rows[0])[0];
+    })
+    .then(() => {
+        balance -= Number(value);
+    })
+    .then(() => {
+        pool.query('UPDATE envelopes SET balance = $1 where envelope = $2', [balance, envelope], (error, results) => { 
+            if (error) {
+                throw error;
+            }
+            res.status(200).send(`${envelope} updated with balance of ${balance}`);
+        })
+    })
+    .catch(e => console.error(e))
+}
+
+const transferMoney = (fromEnv, toEnv, value, res) => {
+    let balFrom = Number(0)
+    let balTo = Number(0)
+    // Minus from envelope
+    pool
+    .query('SELECT balance FROM envelopes where envelope = $1', [fromEnv])
+    .then(results => {
+        console.log('res1', results)
+        balFrom = Object.values(results.rows[0])[0];
+    })
+    .then(() => {
+        balFrom -= Number(value);
+        console.log('balFrom', balFrom)
+    })
+    .then(() => {
+        pool.query('UPDATE envelopes SET balance = $1 where envelope = $2', [balFrom, fromEnv], (error, results) => { 
+            if (error) {
+                throw error;
+            }
+        })
+    })
+    // Add to envelope
+    .then(() => { 
+        pool
+        .query('SELECT balance FROM envelopes where envelope = $1', [toEnv])
+        .then(results => {
+            balTo = Object.values(results.rows[0])[0];     
+        })
+        .then(() => {
+            balTo += Number(value);
+        })
+        .then(() => {
+            pool.query('UPDATE envelopes SET balance = $1 where envelope = $2', [balTo, toEnv], (error, results) => { 
+                if (error) {
+                    throw error;
+                }
+                res.status(200).send(`${fromEnv} updated with balance of ${balFrom} and ${toEnv} updated with balance of ${balTo}`);
+            })
+        })
+    })
+    .catch(e => console.error(e))
+}
+
 
 module.exports = {
-    getCategories,
-    getCategory,
+    getEnvelopes,
+    getEnvelope,
     putMinus,
-    putAdd
+    putAdd,
+    putTransfer
 };
