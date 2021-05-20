@@ -11,7 +11,7 @@ const pool = new Pool({
 // create functions for each route
 
 // GET all envelopes
-const getEnvelopes = (req, res) => {
+const getEnvs = (req, res) => {
     pool.query('SELECT * FROM envelopes ORDER BY id ASC', (error, results) => { 
         if (error) {
             throw error
@@ -21,7 +21,7 @@ const getEnvelopes = (req, res) => {
 }
 
 // GET a single envelope
-const getEnvelope = (req, res) => {
+const getEnv = (req, res) => {
     const envelope = req.params.envelope
     pool.query('SELECT * FROM envelopes where envelope = $1', [envelope], (error, results) => { 
         if (error) {
@@ -53,6 +53,18 @@ const putTransfer = (req, res) => {
     transferMoney(fromEnv, toEnv, value, res);
 } 
 
+// POST envelope
+const postEnv = (req, res) => {
+    const envelope = Object.keys(req.body)[0];
+    const value = Object.values(req.body)[0];
+    addEnv(envelope, value, res);
+}
+
+// DELETE envelope
+const delEnv = (req, res) => {
+    const envelope = req.params.envelope;
+    removeEnv(envelope, res);
+}
 
 // functions
 
@@ -142,11 +154,29 @@ const transferMoney = (fromEnv, toEnv, value, res) => {
     .catch(e => console.error(e))
 }
 
+const addEnv = (envelope, value, res) => {
+    pool.query('INSERT INTO envelopes (envelope, balance) VALUES ($1, $2)', [envelope, value], (error, results) => { 
+        if (error) {
+            throw error;
+        } res.status(201).send(`${envelope} with balance ${value} created and ready to use`) 
+    })
+}
+
+const removeEnv = (envelope, res) => {
+    pool.query('DELETE FROM envelopes WHERE envelope = $1', [envelope], (error, results) => { 
+        if (error) {
+            res.status(404).send();
+            throw error;
+        } res.status(202).send(`${envelope} has been removed`) 
+    })
+}
 
 module.exports = {
-    getEnvelopes,
-    getEnvelope,
+    getEnvs,
+    getEnv,
     putMinus,
     putAdd,
-    putTransfer
+    putTransfer,
+    postEnv,
+    delEnv
 };

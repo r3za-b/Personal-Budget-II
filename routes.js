@@ -9,10 +9,10 @@ envelopesRouter.use(express.json()); /* This allows us to access the body data i
 
 
 // Read all envelopes
-envelopesRouter.get('/', db.getEnvelopes)
+envelopesRouter.get('/', db.getEnvs)
 
 // Read a single envelope
-envelopesRouter.get('/:envelope', db.getEnvelope)
+envelopesRouter.get('/:envelope', db.getEnv)
 
 // Update an envelope's balance: minus money
 envelopesRouter.put('/:envelope/minus', db.putMinus)
@@ -26,29 +26,10 @@ envelopesRouter.put('/transfer/:from/:to', db.putTransfer)
 
 
 // Create an envelope
-envelopesRouter.post('/', (req, res, next) => {
-    const id = envelopes.length + 1
-    const a = {
-        "ID": id,
-        "envelope": Object.values(req.body)[0],
-        "balance": Object.values(req.body)[1]
-    }
-    envelopes.push(a);
-    res.status(201).send(envelopes[id - 1])
-})
+envelopesRouter.post('/', db.postEnv)
 
 // Delete an envelope
-envelopesRouter.delete('/:envelope', (req, res, next) => {
-    const index = envelopes.findIndex(x => { // find index of array by envelope
-        return x.envelope === req.params.envelope;
-    })
-    if (index !== -1) {
-        envelopes.splice(index, 1);
-        res.status(202).send()
-    } else {
-        res.status(404).send()
-    }
-})
+envelopesRouter.delete('/:envelope', db.delEnv)
 
 
 // Export router
