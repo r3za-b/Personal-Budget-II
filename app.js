@@ -1,5 +1,9 @@
 const express = require('express'); // Import express module 
 const app = express(); // Create an instance of express 
+const cors = require('cors');
+
+app.use(express.static("public"));
+app.use(cors());
 
 const PORT = 4001;
 

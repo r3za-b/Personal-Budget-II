@@ -158,9 +158,10 @@ const addEnv = (envelope, value, res) => {
     pool.query('INSERT INTO envelopes (envelope, balance) VALUES ($1, $2)', [envelope, value], (error, results) => { 
         if (error) {
             throw error;
-        } res.status(201).send(`${envelope} with balance ${value} created and ready to use`) 
+        } res.status(201).send(results) 
     })
 }
+//`${envelope} with balance ${value} created and ready to use`
 
 const removeEnv = (envelope, res) => {
     pool.query('DELETE FROM envelopes WHERE envelope = $1', [envelope], (error, results) => { 

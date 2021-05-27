@@ -1,0 +1,31 @@
+* {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color:whitesmoke
+  }
+   
+   
+  h1 {
+    color:lightskyblue;
+    text-align: center;
+  }
+   
+   
+  p, 
+  li {
+    font-size: 18px;
+    color:cornflowerblue;
+    text-align:center;
+  }
+   
+   
+  a {
+    text-decoration: none;
+  }
+
+  [type='submit'] {
+    margin: 8px;
+  }
+
+  table {
+      margin: 9px;
+  }
