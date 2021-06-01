@@ -10,20 +10,20 @@
 <body>
     <h1>Personal Envelopes</h1>
     <p>This is a website that allows you to keep track of your spending through what is known as the "envelopes" method. In this, you allocate a spending budget for each envelope each month, and you only spend from that envelope for its associated category. For example, all spending for groceries will come out of the "groceries" envelope. This method allows you to think about your spending and use your money more consciously. Enjoy!</p>
-    <form class="addEnv_form">
-    <button type="submit" id="addEnv_butt">Add Envelope</button> <input type="text" id="addEnv_env" placeholder="Envelope"> <input type="text" id="addEnv_bal" placeholder="Balance">
-    </form>
-    <br>
-    <button type="submit">Add To Envelope</button> <input type="text" placeholder="Envelope"> <input type="text" placeholder="Amount">
-    <br>
-    <button type="submit">Minus From Envelope</button> <input type="text" placeholder="Envelope"> <input type="text" placeholder="Amount">
-    <br>
-    <button type="submit">Delete Envelope</button> <input type="text" placeholder="Envelope">
-    <br>
-    <button type="submit">Transfer Between Envelopes</button> <input type="text" placeholder="From Envelope"> <input type="text" placeholder="To Envelope">  <input type="text" placeholder="Amount">
 
+    
+    <button type="submit" id="postButt">Add Envelope</button> <input type="text" id="postEnv" placeholder="Envelope"> <input type="text" id="postBal" placeholder="Balance">
+    <br>
+    <button type="submit" id="addButt">Add To Envelope</button> <input type="text" id="addEnv" placeholder="Envelope"> <input type="text" id="addVal" placeholder="Amount">
+    <br>
+    <button type="submit" id="minButt">Minus From Envelope</button> <input type="text" id="minEnv" placeholder="Envelope"> <input type="text" id="minVal" placeholder="Amount">
+    <br>
+    <button type="submit" id="delButt">Delete Envelope</button> <input type="text" id="delEnv" placeholder="Envelope">
+    <br>
+    <button type="submit" id="tranButt">Transfer Between Envelopes</button> <input type="text" id="fromEnv" placeholder="From Envelope"> <input type="text" id="toEnv" placeholder="To Envelope">  <input type="text" id="tranVal" placeholder="Amount">
+    <p id="display"></p>
 
-    <table id="table" style="width:30%">
+    <table id="table">
         <tr>
           <th>Envelope</th>
           <th>Balance</th>

@@ -158,7 +158,7 @@ const addEnv = (envelope, value, res) => {
     pool.query('INSERT INTO envelopes (envelope, balance) VALUES ($1, $2)', [envelope, value], (error, results) => { 
         if (error) {
             throw error;
-        } res.status(201).send(results) 
+        } res.status(201).send(`${envelope} with balance ${value} created and ready to use`) 
     })
 }
 //`${envelope} with balance ${value} created and ready to use`
