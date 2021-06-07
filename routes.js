@@ -1,6 +1,5 @@
 // Set-up environment 
 const express = require('express'); // Import the web framework express 
-const envelopes = require('./db.js'); // Import envelopes array
 const db = require('./queries');
 
 const envelopesRouter = express.Router() /* An express router provides a subset of express methods. To create a subset of one we invoke the .Router() method on the top-level Express import. This gives us access to the Router object through envelopesRouter*/
