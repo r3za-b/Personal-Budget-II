@@ -10,7 +10,7 @@ const PORT = 4001;
 const envelopesRouter = require('./routes.js'); // Import the envelopesRouter
 app.use('/envelopes', envelopesRouter); // We mount a router at a certain path using app.use()
 
-app.listen(PORT, () => { // Listen for requests on a certain port 
+app.listen(process.env.PORT || PORT, () => { // Listen for requests on a certain port 
     console.log(`Server is listening on ${PORT}`);
 });
 
