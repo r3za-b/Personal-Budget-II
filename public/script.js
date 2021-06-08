@@ -1,6 +1,6 @@
 
 // Information to reach API
-const url = 'http://localhost:4001/envelopes';
+const url = 'https://personal-budget-envelopes.herokuapp.com/envelopes';
 
 // Selects page elements
 // Post envelope
