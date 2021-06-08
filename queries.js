@@ -1,4 +1,4 @@
-const Pool = require('pg').Pool
+const { Pool } = require('pg');
 
 // connection to database when running from Heroku
 const pool = new Pool({ 
