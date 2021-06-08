@@ -65,7 +65,7 @@ const postEnvFunc = () => {
     })
     .then((textResponse => {
     document.getElementById('display').innerHTML = `${textResponse}`
-    $('#table').load('http://localhost:4001/ #table th')
+    $('#table').load('https://personal-budget-envelopes.herokuapp.com/ #table th')
     fetchTable();
   }))
 }
@@ -97,7 +97,7 @@ const addEnvFunc = () => {
     })
     .then((textResponse => {
       document.getElementById('display').innerHTML = `${textResponse}`
-      $('#table').load('http://localhost:4001/ #table th')
+      $('#table').load('https://personal-budget-envelopes.herokuapp.com/ #table th')
       fetchTable();
   }))
 }
@@ -129,7 +129,7 @@ const minEnvFunc = () => {
   })
   .then((textResponse => {
     document.getElementById('display').innerHTML = `${textResponse}`
-    $('#table').load('http://localhost:4001/ #table th')
+    $('#table').load('https://personal-budget-envelopes.herokuapp.com/ #table th')
     fetchTable();
 }))
 }
@@ -156,7 +156,7 @@ const delEnvFunc = () => {
   })
   .then((textResponse => {
     document.getElementById('display').innerHTML = `${textResponse}`
-    $('#table').load('http://localhost:4001/ #table th')
+    $('#table').load('https://personal-budget-envelopes.herokuapp.com/ #table th')
     fetchTable();
 }))
 }
@@ -188,7 +188,7 @@ const tranEnvFunc = () => {
   })
   .then((textResponse => {
     document.getElementById('display').innerHTML = `${textResponse}`
-    $('#table').load('http://localhost:4001/ #table th')
+    $('#table').load('https://personal-budget-envelopes.herokuapp.com/ #table th')
     fetchTable();
 }))
 }
