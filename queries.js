@@ -1,12 +1,19 @@
 const Pool = require('pg').Pool
 
-const pool = new Pool({
+// connection to database when running from Heroku
+const pool = new Pool({ 
+    connectionString: process.env.DATABASE_URL,	// use DATABASE_URL environment variable from Heroku app 
+    ssl: true
+});
+
+// connection to database when running app locally
+/*const pool = new Pool({
   user: 'Reza',
   host: 'localhost',
   database: 'envelopes',
   password: null,
   port: 5432,
-})
+})*/
 
 // create functions for each route
 
