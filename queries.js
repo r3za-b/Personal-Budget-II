@@ -1,6 +1,8 @@
 const { Pool } = require('pg');
 
 // connection to database when running from Heroku
+
+console.log(process.env.DATABASE_URL)
 const pool = new Pool({ 
     connectionString: process.env.DATABASE_URL,	// use DATABASE_URL environment variable from Heroku app 
     ssl: {
