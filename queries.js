@@ -3,7 +3,9 @@ const Pool = require('pg').Pool
 // connection to database when running from Heroku
 const pool = new Pool({ 
     connectionString: process.env.DATABASE_URL,	// use DATABASE_URL environment variable from Heroku app 
-    ssl: true
+    ssl: {
+        rejectUnauthorized: false // don't check for SSL cert
+      }
 });
 
 // connection to database when running app locally
